@@ -39,8 +39,10 @@ var presets = [
     { // Default
         //feed: 0.018,
         //kill: 0.051
-        feed: 0.037,
-        kill: 0.06
+        feed1: 0.037,
+        feed2: 0.037,
+        kill1: 0.06,
+        kill2: 0.06
     },
     { // Solitons
         feed: 0.03,
@@ -89,8 +91,10 @@ var presets = [
 ];
 
 // Configuration.
-var feed = presets[0].feed;
-var kill = presets[0].kill;
+var feed1 = presets[0].feed1;
+var feed2 = presets[0].feed2;
+var kill1 = presets[0].kill1;
+var kill2 = presets[0].kill2;
 
 init = function()
 {
@@ -115,8 +119,10 @@ init = function()
         screenHeight: {type: "f", value: undefined},
         tSource: {type: "t", value: undefined},
         delta: {type: "f", value: 1.0},
-        feed: {type: "f", value: feed},
-        kill: {type: "f", value: kill},
+        feed1: {type: "f", value: feed1},
+        feed2: {type: "f", value: feed2},
+        kill1: {type: "f", value: kill1},
+        kill2: {type: "f", value: kill2},
         brush: {type: "v2", value: new THREE.Vector2(-10, -10)},
         color1: {type: "v4", value: new THREE.Vector4(0, 0, 0.0, 0)},
         color2: {type: "v4", value: new THREE.Vector4(0, 1, 0, 0.2)},
@@ -193,8 +199,10 @@ var render = function(time)
     
     mScreenQuad.material = mGSMaterial;
     mUniforms.delta.value = dt;
-    mUniforms.feed.value = feed;
-    mUniforms.kill.value = kill;
+    mUniforms.feed1.value = feed1;
+    mUniforms.feed2.value = feed2;
+    mUniforms.kill1.value = kill1;
+    mUniforms.kill2.value = kill2;
     
     for(var i=0; i<8; ++i)
     {
@@ -226,8 +234,10 @@ var render = function(time)
 
 loadPreset = function(idx)
 {
-    feed = presets[idx].feed;
-    kill = presets[idx].kill;
+    feed1 = presets[idx].feed1;
+    feed2 = presets[idx].feed2;
+    kill1 = presets[idx].kill1;
+    kill2 = presets[idx].kill2;
     worldToForm();
 }
 
@@ -345,24 +355,41 @@ $(document).bind('webkitfullscreenchange mozfullscreenchange fullscreenchange', 
 var worldToForm = function()
 {
     //document.ex.sldReplenishment.value = feed * 1000;
-    $("#sld_replenishment").slider("value", feed);
-    $("#sld_diminishment").slider("value", kill);
+    $("#sld_replenishment1").slider("value", feed1);
+    $("#sld_replenishment2").slider("value", feed2);
+    $("#sld_diminishment1").slider("value", kill1);
+    $("#sld_diminishment2").slider("value", kill2);
 }
 
 var init_controls = function()
 {
-    $("#sld_replenishment").slider({
-        value: feed, min: 0, max:0.1, step:0.001,
-        change: function(event, ui) {$("#replenishment").html(ui.value); feed = ui.value; updateShareString();},
-        slide: function(event, ui) {$("#replenishment").html(ui.value); feed = ui.value; updateShareString();}
+    $("#sld_replenishment1").slider({
+        value: feed1, min: 0, max:0.1, step:0.001,
+        change: function(event, ui) {$("#replenishment1").html(ui.value); feed1 = ui.value; updateShareString();},
+        slide: function(event, ui) {$("#replenishment1").html(ui.value); feed1 = ui.value; updateShareString();}
     });
-    $("#sld_replenishment").slider("value", feed);
-    $("#sld_diminishment").slider({
-        value: kill, min: 0, max:0.073, step:0.001,
-        change: function(event, ui) {$("#diminishment").html(ui.value); kill = ui.value; updateShareString();},
-        slide: function(event, ui) {$("#diminishment").html(ui.value); kill = ui.value; updateShareString();}
+    $("#sld_replenishment1").slider("value", feed1);
+
+    $("#sld_replenishment2").slider({
+        value: feed2, min: 0, max:0.1, step:0.001,
+        change: function(event, ui) {$("#replenishment2").html(ui.value); feed2 = ui.value; updateShareString();},
+        slide: function(event, ui) {$("#replenishment2").html(ui.value); feed2 = ui.value; updateShareString();}
     });
-    $("#sld_diminishment").slider("value", kill);
+    $("#sld_replenishment2").slider("value", feed2);
+
+    $("#sld_diminishment1").slider({
+        value: kill1, min: 0, max:0.073, step:0.001,
+        change: function(event, ui) {$("#diminishment1").html(ui.value); kill1 = ui.value; updateShareString();},
+        slide: function(event, ui) {$("#diminishment1").html(ui.value); kill1 = ui.value; updateShareString();}
+    });
+    $("#sld_diminishment1").slider("value", kill1);
+
+    $("#sld_diminishment2").slider({
+        value: kill2, min: 0, max:0.073, step:0.001,
+        change: function(event, ui) {$("#diminishment2").html(ui.value); kill2 = ui.value; updateShareString();},
+        slide: function(event, ui) {$("#diminishment2").html(ui.value); kill2 = ui.value; updateShareString();}
+    });
+    $("#sld_diminishment2").slider("value", kill2);
     
     $('#share').keypress(function (e) {
         if (e.which == 13) {
@@ -447,15 +474,15 @@ parseShareString = function()
 
 updateShareString = function()
 {
-    var str = "".concat(feed, ",", kill);
+    // var str = "".concat(feed, ",", kill);
     
-    var values = $("#gradient").gradient("getValues");
-    for(var i=0; i<values.length; i++)
-    {
-        var v = values[i];
-        str += "".concat(",", v[0], ",", v[1]);
-    }
-    $("#share").val(str);
+    // var values = $("#gradient").gradient("getValues");
+    // for(var i=0; i<values.length; i++)
+    // {
+    //     var v = values[i];
+    //     str += "".concat(",", v[0], ",", v[1]);
+    // }
+    // $("#share").val(str);
 }
 
 })();
